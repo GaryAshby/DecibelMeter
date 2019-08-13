@@ -12,7 +12,7 @@
 <div id="meter" class="icon-microphone"><span></span></div>
 
 <div id="app">
-    {{ dBLevel }} dB
+    {{ dBLevels }} dB
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -22,7 +22,7 @@
     var app = new Vue({
                         el: '#app',
                         data: {
-                            dBLevel: 'Hello Vue!'
+                            dBLevels: []
                         }
                         })
 
@@ -43,8 +43,7 @@
 	// adjust displayed level when audio sampled
 	meter.on('sample', function (dB, percent, level) {
         levelEl.style.height = (percent * 100) + '%';
-        //leveldB.innerHTML = (dB+100) + ' dB'; // display current dB level
-        app.dBLevel = dB+100;
+        app.dBLevels.push(dB+100);
         console.log(dB+100);
 	});
 	
