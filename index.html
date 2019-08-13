@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JW Sound Quality</title>
+    
+    <link rel="stylesheet" href="build/font/decibel-meter/style.css">
+    <link rel="stylesheet" href="build/css/general.css">
+</head>
+<body>
+
+<div id="meter" class="icon-microphone"><span></span></div>
+
+<div id="app">
+    {{ dBLevel }} dB
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="build/decibel-meter.js"></script>
+<script>
+    //Vue Stuff
+    var app = new Vue({
+                        el: '#app',
+                        data: {
+                            dBLevel: 'Hello Vue!'
+                        }
+                        })
+
+	// HTML elements
+	var meterEl = document.getElementById('meter'),
+        levelEl = document.querySelector('#meter > span'),
+        leveldB = document.getElementById('db-level'); 
+	
+	// Decibel Meter
+	var meter = DecibelMeter.create('meter');
+	
+	// listen for audio sources to be ready
+	meter.on('ready', function (meter, sources) {
+		var mic = sources[0]; // select first mic
+		meter.connect(mic); // connect to mic
+	});
+	
+	// adjust displayed level when audio sampled
+	meter.on('sample', function (dB, percent, level) {
+        levelEl.style.height = (percent * 100) + '%';
+        //leveldB.innerHTML = (dB+100) + ' dB'; // display current dB level
+        app.dBLevel = dB+100;
+        console.log(dB+100);
+	});
+	
+	// change element class when meter starts listening
+	meter.on('listen', function (meter) {
+		meterEl.classList.add('active');
+    });
+    
+	// change element class when meter stops listening
+	meter.on('stop-listening', function (meter) {
+		meterEl.classList.remove('active');
+		levelEl.style.height = 0;
+	});
+	
+	// clicking the meter element will toggle listening
+	meterEl.addEventListener('click', function (e) {
+		if (meter.listening)
+			meter.stopListening();
+		else
+		{
+            meter.listen();
+            console.log("JW-Sound: Started Listening to Mic.")
+			setTimeout(function(){ 
+                            console.log("JW-Sound: 10sec Timeout - Stop Listening.")
+                            meter.stopListening(); 
+                        }, 10000);
+		}
+    });
+    
+    
+
+	
+</script>
+</body>
+</html>
