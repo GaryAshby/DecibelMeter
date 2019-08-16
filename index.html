@@ -4,25 +4,27 @@
     <meta charset="utf-8">
     <title>JW Sound Quality</title>
     
-    <link rel="stylesheet" href="build/font/decibel-meter/style.css">
-    <link rel="stylesheet" href="build/css/general.css">
+    <link rel="stylesheet" href="decibel-meter/style.css">
+	<link rel="stylesheet" href="decibel-meter/general.css">
+	<link rel="manifest" href="manifest.json">
 </head>
 <body>
 
 <div id="meter" class="icon-microphone"><span></span></div>
 
 <div id="app">
-    {{ dBLevels }} dB
+    {{ dBAverage }} Average dB
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script src="build/decibel-meter.js"></script>
+<script src="decibel-meter/decibel-meter.js"></script>
 <script>
     //Vue Stuff
     var app = new Vue({
                         el: '#app',
                         data: {
-                            dBLevels: []
+							dBLevels: [],
+							dBAverage: 0
                         }
                         })
 
@@ -43,7 +45,8 @@
 	// adjust displayed level when audio sampled
 	meter.on('sample', function (dB, percent, level) {
         levelEl.style.height = (percent * 100) + '%';
-        app.dBLevels.push(dB+100);
+		app.dBLevels.push(dB+100);
+		app.dBAverage = (app.dBAverage+(dB+100)) /2
         console.log(dB+100);
 	});
 	
